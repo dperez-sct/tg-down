@@ -118,6 +118,10 @@ nohup python monitor.py > output.log 2>&1 &
 
 But... I recommend you to use byobu or similar. At the moment tg-down don't have logging.
 
+## TO-DO
+* First of all, Dockerize the app.
+
+
 ## Disclaimer
 Terms of Service: This tool is for educational purposes and personal archiving only. Do not use it to infringe on copyright or distribute content without permission.
 
