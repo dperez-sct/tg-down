@@ -24,4 +24,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: ghcr.io/${{ secrets.GHCR_USERNAME }}/mi-imagen:latest
+          tags: ghcr.io/${{ secrets.GHCR_USERNAME }}/tg-down:dev-${{ github.run_number }}
