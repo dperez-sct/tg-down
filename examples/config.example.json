@@ -1,0 +1,22 @@
+{
+  "api_credentials": {
+    "api_id": 1234567,
+    "api_hash": "your_api_hash_here",
+    "session_name": "tg_down_session"
+  },
+  "target": {
+    "channel_id": -1001234567890,
+    "download_path": "/app/downloads"
+  },
+  "settings": {
+    "download_filter": "all",
+    "download_history": true,
+    "max_queue_size": 50,
+    "concurrent_workers": 1
+  },
+  "system_spoofing": {
+    "device_model": "Desktop",
+    "system_version": "Windows 11",
+    "app_version": "4.10.4"
+  }
+}

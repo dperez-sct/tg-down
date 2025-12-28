@@ -17,7 +17,7 @@ This tool interacts directly with the **Telegram MTProto API** using [Telethon](
 
 ---
 
-## 📋 Prerequisites
+## Prerequisites
 
 1.  **Python 3.8+** installed.
 2.  **Telegram API Credentials:**
@@ -36,22 +36,16 @@ This tool interacts directly with the **Telegram MTProto API** using [Telethon](
     cd tg-down
     ```
 
-2.  **Set up a Virtual Environment (Recommended):**
-    * *Linux/Mac:*
-        ```bash
-        python3 -m venv venv
-        source venv/bin/activate
-        ```
-    * *Windows:*
-        ```bash
-        python -m venv venv
-        .\venv\Scripts\activate
-        ```
+2.  **Set up a Virtual Environment (Recommended) and install dependencies (local):**
 
-3.  **Install dependencies:**
+    *Linux / macOS*
     ```bash
-    pip install telethon tqdm
+    python3 -m venv venv
+    source venv/bin/activate
+    pip install -r app/requirements.txt
     ```
+
+    Note: `app/requirements.txt` is used for local runs. Consider pinning versions for reproducibility.
 
 ---
 
@@ -95,12 +89,25 @@ Create a file named `config.json` in the root directory. You can copy the struct
 |system_spoofing|Do not change unless necessary. Prevents connection errors by mimicking an official client|
 
 ## Usage
+Local (run without Docker)
 
-Run the script:
+1. Ensure `config.json` is present in the project root.
+2. From the project root run:
 
 ```bash
-python3 monitor.py
+python3 app/tg-down.py
 ```
+
+Docker (build + run)
+
+```bash
+docker compose build
+docker compose up -d
+```
+
+Notes:
+- `docker-compose.yaml` mounts `./config.json` into the container at `/app/config.json`. If you place `config.json` elsewhere, mount it appropriately into the container or adjust the compose file to point to its location.
+- Downloaded files and session files are mapped to `./downloads` and `./sessions` on the host by the compose file.
 
 ## First Run Authentication:
 
@@ -110,13 +117,64 @@ If you have 2FA enabled, it will ask for your password.
 
 Note: This only happens once. A .session file will be created to save your login.
 
-Running in Background (Linux/VPS): To keep the bot running after closing the terminal:
+Interactive first run (Docker)
 
-```bash
-nohup python monitor.py > output.log 2>&1 &
+The initial login requires an interactive terminal to enter your phone number and the login code. Use one of the following approaches to perform the first-run authentication inside a container, and make sure the session is persisted to the host by mounting the `sessions` folder.
+
+- Ensure you have a `config.json` present and set the `session_name` in the config to a path under `sessions`, for example:
+
+```json
+"api_credentials": { "session_name": "sessions/tg_down_session" }
 ```
 
-But... I recommend you to use byobu or similar. At the moment tg-down don't have logging.
+- Create the sessions folder on the host first:
+
+Linux/macOS:
+```bash
+mkdir -p sessions
+```
+
+Windows PowerShell:
+```powershell
+md sessions
+```
+
+- Using Docker Compose (recommended if you use compose):
+
+```bash
+docker compose run --rm -it tg-down
+```
+
+This runs the `tg-down` service interactively and starts the script; follow the prompts to enter your phone and code. After successful login the session file (e.g. `tg_down_session.session`) will appear in `./sessions` on the host.
+
+- Using docker run (build the image first):
+
+Linux/macOS:
+```bash
+docker build -t tg-down .
+docker run --rm -it \
+    -v $(pwd)/config.json:/app/config.json \
+    -v $(pwd)/sessions:/app/sessions \
+    tg-down
+```
+
+Windows PowerShell:
+```powershell
+docker build -t tg-down .
+docker run --rm -it -v ${PWD}/config.json:/app/config.json -v ${PWD}/sessions:/app/sessions tg-down
+```
+
+Notes:
+- If you do not mount `./sessions`, set `session_name` in `config.json` to a path that will be preserved between runs, or mount `/app` as a whole.
+- After the interactive login completes and the session file is on the host, stop the interactive container and run the service normally (e.g., `docker compose up -d`).
+
+Running in Background (Linux/VPS): To keep the bot running after closing the terminal (local run):
+
+```bash
+nohup python app/tg-down.py > output.log 2>&1 &
+```
+
+For Docker, use `docker compose up -d` and `docker compose logs -f tg-down` to follow logs.
 
 ## TO-DO
 * First of all, Dockerize the app.
