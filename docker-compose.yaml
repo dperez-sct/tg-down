@@ -1,14 +1,9 @@
 services:
   tg-down:
-    build: .
+    image: ghcr.io/dperez-sct/tg-down:dev-2
     container_name: tg-down
     restart: unless-stopped
     volumes:
-      # 1. Tu archivo de configuración local se inyecta en el contenedor
       - ./config.json:/app/config.json
-      
-      # 2. Carpeta donde aparecerán los archivos descargados
       - ./downloads:/app/downloads
-      
-      # 3. Carpeta para guardar la sesión de Telegram (evita re-login)
       - ./sessions:/app/sessions
