@@ -1,6 +1,6 @@
 services:
   tg-down:
-    image: ghcr.io/dperez-sct/tg-down:dev-2
+    image: ghcr.io/dperez-sct/tg-down:latest
     container_name: tg-down
     restart: unless-stopped
     volumes:
