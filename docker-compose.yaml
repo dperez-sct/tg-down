@@ -1,0 +1,9 @@
+services:
+  tg-down:
+    image: ghcr.io/dperez-sct/tg-down:dev-2
+    container_name: tg-down
+    restart: unless-stopped
+    volumes:
+      - ./config.json:/app/config.json
+      - ./downloads:/app/downloads
+      - ./sessions:/app/sessions
