@@ -68,6 +68,7 @@ Create a file named `config.json` in the root directory. You can copy the struct
         "download_filter": "all",
         "download_history": true,
         "max_queue_size": 50,
+        "skip_same_size": true,
         "concurrent_workers": 1
     },
     "system_spoofing": {
